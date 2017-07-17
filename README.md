@@ -5,6 +5,7 @@
 This repo contains [Docker Compose](https://docs.docker.com/compose/) containers for running [MediaWiki](https://www.mediawiki.org/) software.
 
 Clone the repo, create and start containers:
+
     git clone https://github.com/pastakhov/compose-mediawiki-ubuntu.git
     cd compose-mediawiki-ubuntu
     docker-compose up
@@ -42,8 +43,10 @@ If changed, make sure that `MW_DB_INSTALLDB_PASS` in web section was changed too
 #### ports
 The web container have apache web server that are listening for connections on private port 80.
 By default the port public port for connections is 8080:
+
     ports:
         - "8080:80"
+
 You are welcome to change it to any you would like, just note: *make sure that `MW_SITE_SERVER` has correct value*
 
 #### environment
@@ -82,9 +85,11 @@ For change the favicon just replace the `web/favicon.ico` file by your favicon f
 
 **How do I rebuild the containers to accept changes to the settings?**
 Just use the command:
+
     docker-compose build
 
 Then restart containers by:
+
     docker-compose stop
     docker-compose up
 
@@ -110,11 +115,13 @@ This process includes:
 
 **Make a full backup of the wiki, including both the database and the files.**
 While the upgrade scripts are well-maintained and robust, things could still go awry.
+
     cd compose-mediawiki-ubuntu
     docker-compose exec db /bin/bash -c 'mysqldump --all-databases -uroot -p"$MYSQL_ROOT_PASSWORD" 2>/dev/null | gzip | base64 -w 0' | base64 -d > backup_$(date +"%Y%m%d_%H%M%S").sql.gz
     docker-compose exec web /bin/bash -c 'tar -c $MW_VOLUME $MW_HOME/images 2>/dev/null | base64 -w 0' | base64 -d > backup_$(date +"%Y%m%d_%H%M%S").tar
 
 picking up the latest changes, stop, rebuld and start containers:
+
     cd compose-mediawiki-ubuntu
     git pull
     docker-compose build
