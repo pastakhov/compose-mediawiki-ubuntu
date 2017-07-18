@@ -22,7 +22,7 @@ services:
         environment:
             - MW_SITE_SERVER=//localhost:8080
             - MW_SITE_NAME=MediaWiki
-            - MW_SITE_LANG=ru
+            - MW_SITE_LANG=en
             - MW_DEFAULT_SKIN=vector
             - MW_ENABLE_UPLOADS=1
             - MW_USE_INSTANT_COMMONS=0
