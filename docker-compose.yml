@@ -1,0 +1,51 @@
+version: '2'
+services:
+    db:
+        build: 
+            context: ./db
+            dockerfile: Dockerfile
+        environment:
+            - MYSQL_ROOT_HOST=%
+            - MYSQL_ROOT_PASSWORD=3dodPaTXF5
+
+    web:
+        build: 
+            context: ./web
+            dockerfile: Dockerfile
+        ports:
+            - "8080:80"
+        links:
+            - db
+            - parsoid
+            - elasticsearch
+            - memcache
+        environment:
+            - MW_SITE_SERVER=//localhost:8080
+            - MW_SITE_NAME=MediaWiki
+            - MW_SITE_LANG=ru
+            - MW_DEFAULT_SKIN=vector
+            - MW_ENABLE_UPLOADS=1
+            - MW_USE_INSTANT_COMMONS=0
+            - MW_ADMIN_USER=admin
+            - MW_ADMIN_PASS=q32Gx7Amg7
+            - MW_DB_NAME=mediawiki
+            - MW_DB_USER=mwuser
+            - MW_DB_PASS=8Xgat7mUKa
+            - MW_DB_INSTALLDB_USER=root
+            - MW_DB_INSTALLDB_PASS=3dodPaTXF5
+            - MW_AUTOUPDATE=true
+
+    memcache:
+        build:
+            context: ./memcache
+            dockerfile: Dockerfile
+
+    parsoid:
+        build:
+            context: ./parsoid
+            dockerfile: Dockerfile
+
+    elasticsearch:
+        build:
+            context: ./elasticsearch
+            dockerfile: Dockerfile
