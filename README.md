@@ -2,7 +2,7 @@
 
 ## Briefly
 
-This repo contains [Docker Compose](https://docs.docker.com/compose/) containers for running [MediaWiki](https://www.mediawiki.org/) software.
+This repo contains [Docker Compose](https://docs.docker.com/compose/) containers to run the [MediaWiki](https://www.mediawiki.org/) software.
 
 Clone the repo, create and start containers:
 
@@ -111,7 +111,7 @@ This process includes:
     - get the latest data for CLDR and UniversalLanguageSelector extensions
     - run `populateContentModel.php` maintenance script that populates the fields nedeed for use the Flow extension on all namespaces
 
-## keeping up to date
+## Keeping up to date
 
 **Make a full backup of the wiki, including both the database and the files.**
 While the upgrade scripts are well-maintained and robust, things could still go awry.
@@ -129,3 +129,13 @@ picking up the latest changes, stop, rebuld and start containers:
     docker-compose up
 
 The upgrade process is fully automated and includes the launch of all necessary maintenance scripts (only when it is really required)
+
+## Data volumes
+
+* `db`
+    * `/var/lib/mysql` - database files
+* `elasticsearch`
+    * `/elasticsearch` - data and log files
+* `web`
+    * `/var/www/html/w/images` - files loaded by users
+    * `/mediawiki` - contains info about the MediaWiki instance
