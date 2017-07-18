@@ -137,7 +137,7 @@ The upgrade process is fully automated and includes the launch of all necessary 
 * `elasticsearch`
     * `/elasticsearch` - data and log files
 * `web`
-    * `/var/www/html/w/images` - files loaded by users
+    * `/var/www/html/w/images` - files uploaded by users
     * `/mediawiki` - contains info about the MediaWiki instance
     
 # List of installed extensions
