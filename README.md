@@ -139,3 +139,39 @@ The upgrade process is fully automated and includes the launch of all necessary 
 * `web`
     * `/var/www/html/w/images` - files loaded by users
     * `/mediawiki` - contains info about the MediaWiki instance
+    
+# List of installed extensions
+
+## Bundled Skins
+* [Vector](https://www.mediawiki.org/wiki/Skin:Vector)
+* [Modern](https://www.mediawiki.org/wiki/Skin:Modern)
+* [MonoBook](https://www.mediawiki.org/wiki/Skin:MonoBook)
+* [CologneBlue](https://www.mediawiki.org/wiki/Skin:CologneBlue)
+
+## Bundled extensions
+see https://www.mediawiki.org/wiki/Bundled_extensions
+* [ConfirmEdit](https://www.mediawiki.org/wiki/Extension:ConfirmEdit)
+* [Gadgets](https://www.mediawiki.org/wiki/Extension:Gadgets)
+* [Nuke](https://www.mediawiki.org/wiki/Extension:Nuke)
+* [ParserFunctions](https://www.mediawiki.org/wiki/Extension:ParserFunctions)
+* [Renameuser](https://www.mediawiki.org/wiki/Extension:Renameuser)
+* [WikiEditor](https://www.mediawiki.org/wiki/Extension:WikiEditor)
+* [Cite](https://www.mediawiki.org/wiki/Extension:Cite)
+* [ImageMap](https://www.mediawiki.org/wiki/Extension:ImageMap)
+* [InputBox](https://www.mediawiki.org/wiki/Extension:InputBox)
+* [Interwiki](https://www.mediawiki.org/wiki/Extension:Interwiki)
+* [LocalisationUpdate](https://www.mediawiki.org/wiki/Extension:LocalisationUpdate)
+* [PdfHandler](https://www.mediawiki.org/wiki/Extension:PdfHandler)
+* [Poem](https://www.mediawiki.org/wiki/Extension:Poem)
+* [SpamBlacklist](https://www.mediawiki.org/wiki/Extension:SpamBlacklist)
+* [TitleBlacklist](https://www.mediawiki.org/wiki/Extension:TitleBlacklist)
+* [CiteThisPage](https://www.mediawiki.org/wiki/Extension:CiteThisPage)
+* [SyntaxHighlight GeSHi](https://www.mediawiki.org/wiki/Extension:SyntaxHighlight_GeSHi)
+
+## Commonly used extensions
+* [VisualEditor](https://www.mediawiki.org/wiki/Extension:VisualEditor)
+* [CirrusSearch](https://www.mediawiki.org/wiki/Extension:CirrusSearch)
+* [Echo](https://www.mediawiki.org/wiki/Extension:Echo)
+* [Flow](https://www.mediawiki.org/wiki/Extension:Flow)
+* [Thanks](https://www.mediawiki.org/wiki/Extension:Thanks)
+* [CheckUser](https://www.mediawiki.org/wiki/Extension:CheckUser)
