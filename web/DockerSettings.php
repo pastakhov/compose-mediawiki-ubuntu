@@ -152,7 +152,7 @@ $wgHiddenPrefs[] = 'visualeditor-enable';
 // OPTIONAL: Enable VisualEditor's experimental code features
 #$wgDefaultUserOptions['visualeditor-enable-experimental'] = 1;
 
-$wgVirtualRestConfig['modules']['parsoid'] = array(
+$wgVirtualRestConfig['modules']['parsoid'] = [
 	// URL to the Parsoid instance
 	// Use port 8142 if you use the Debian package
 	'url' => 'http://parsoid:8000',
@@ -160,7 +160,13 @@ $wgVirtualRestConfig['modules']['parsoid'] = array(
 	'domain' => 'localhost',
 	// Parsoid "prefix", see below (optional)
 	'prefix' => 'localhost'
-);
+];
+
+$wgVirtualRestConfig['modules']['restbase'] = [
+  'url' => "http://restbase:7231",
+  'domain' => 'localhost',
+  'parsoidCompat' => false
+];
 
 ########################## CirrusSearch ###########################
 wfLoadExtension( 'Elastica' );

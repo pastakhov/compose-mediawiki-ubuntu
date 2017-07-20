@@ -2,9 +2,6 @@ FROM ubuntu:16.04
 
 MAINTAINER pastakhov@yandex.ru
 
-RUN set -x; \
-    useradd -U -r -s /bin/bash parsoid
-
 # Install requered packages
 RUN set -x; \
     apt-get update \
@@ -16,21 +13,29 @@ RUN set -x; \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt/archives/*
 
+# Update npm
+RUN set -x; \
+    npm install -g npm \
+    && ln -s /usr/bin/nodejs /usr/bin/node
+
+ENV PARSOID_HOME=/var/lib/parsoid
+
 # parsoid setup
 RUN set -x; \
     # Core
-    mkdir -p /var/lib/parsoid \
+    mkdir -p $PARSOID_HOME \
     && git clone \
         --depth 1 \
         https://gerrit.wikimedia.org/r/p/mediawiki/services/parsoid \
-        /var/lib/parsoid \
-    && cd /var/lib/parsoid \
-    && npm install
+        $PARSOID_HOME \
+    && cd $PARSOID_HOME \
+    && npm install \
+    && useradd -U -r -s /bin/bash parsoid
 
-ADD run-parsoid.sh /run-parsoid.sh
+COPY run-parsoid.sh /run-parsoid.sh
 RUN chmod -v +x /run-parsoid.sh
 
-ADD config.yaml /var/lib/parsoid/config.yaml
+COPY config.yaml /var/lib/parsoid/config.yaml
 
 USER parsoid
 EXPOSE 8000

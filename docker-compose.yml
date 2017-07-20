@@ -16,9 +16,10 @@ services:
             - "8080:80"
         links:
             - db
-            - parsoid
             - elasticsearch
             - memcache
+            - parsoid
+            - restbase
         environment:
             - MW_SITE_SERVER=//localhost:8080
             - MW_SITE_NAME=MediaWiki
@@ -43,6 +44,11 @@ services:
     parsoid:
         build:
             context: ./parsoid
+            dockerfile: Dockerfile
+
+    restbase:
+        build:
+            context: ./restbase
             dockerfile: Dockerfile
 
     elasticsearch:
