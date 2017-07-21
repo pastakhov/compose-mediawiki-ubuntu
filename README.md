@@ -24,6 +24,7 @@ Running `sudo docker-compose up` in a checkout of this repository will start con
 - `elasticsearch` - An Elasticsearch container, used as the full-text search engine for MediaWiki
 - `memcache` - A memory object caching system container, used as the cache system for MediaWiki
 - `parsoid` - A bidirectional runtime wikitext parser, used by VisualEditor, Flow and other MediaWiki extensions
+- `restbase` - A caching / storing API proxy backing the REST API
 - `web` - An Apache/MediaWiki container with PHP 7.0 and MediaWiki 1.28
 
 All containers are based on [Ubuntu](https://hub.docker.com/_/ubuntu/) 16.04
