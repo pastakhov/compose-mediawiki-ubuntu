@@ -40,11 +40,11 @@ The reason why it is better than the official is the ability to automatically up
 The only one important environment variable for us is `MYSQL_ROOT_PASSWORD`, it specifies the password that will be set for the MySQL `root` superuser account.
 If changed, make sure that `MW_DB_INSTALLDB_PASS` in web section was changed too.
 
-### web
+### proxy
 
 #### ports
-The web container have apache web server that are listening for connections on private port 80.
-By default the port public port for connections is 8080:
+The proxy container are listening for connections on private port 80.
+By default the public port for connections is 8080:
 ```
     ports:
         - "8080:80"
