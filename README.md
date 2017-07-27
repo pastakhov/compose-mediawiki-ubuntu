@@ -153,6 +153,8 @@ The upgrade process is fully automated and includes the launch of all necessary 
     * `/var/lib/mysql` - database files
 * `elasticsearch`
     * `/elasticsearch` - data and log files
+* `restbase`
+    * `/data` - sqlite files
 * `web`
     * `/var/www/html/w/images` - files uploaded by users
     * `/mediawiki` - contains info about the MediaWiki instance
