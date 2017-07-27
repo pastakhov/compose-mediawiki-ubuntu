@@ -12,7 +12,7 @@ docker-compose up
 ```
 Wait for the completion of the build and initialization process and access it via `http://localhost:8080` in a browser.
 
-Enjoy with MediaWiki + VisualEditor + Elasticsearch + most popular extensions
+Enjoy with [MediaWiki](https://www.mediawiki.org/) + [VisualEditor](https://www.mediawiki.org/wiki/VisualEditor) + [Elasticsearch](https://www.mediawiki.org/wiki/Extension:CirrusSearch) + most popular extensions
 
 # Launching MediaWiki
 
@@ -24,6 +24,7 @@ Running `sudo docker-compose up` in a checkout of this repository will start con
 - `elasticsearch` - An Elasticsearch container, used as the full-text search engine for MediaWiki
 - `memcache` - A memory object caching system container, used as the cache system for MediaWiki
 - `parsoid` - A bidirectional runtime wikitext parser, used by VisualEditor, Flow and other MediaWiki extensions
+- `proxy` - A reverse proxy server [Varnish](https://www.mediawiki.org/wiki/Manual:Varnish_caching) which reduces the time taken to serve often-requested pages
 - `restbase` - A caching / storing API proxy backing the REST API
 - `web` - An Apache/MediaWiki container with PHP 7.0 and MediaWiki 1.28
 
