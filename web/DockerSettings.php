@@ -56,6 +56,14 @@ $wgMemCachedServers = [ 'memcache:11211' ];
 $wgSessionsInObjectCache = true; # optional
 $wgSessionCacheType = CACHE_MEMCACHED; # optional
 
+# Use Varnish accelerator
+# https://www.mediawiki.org/wiki/Manual:Varnish_caching
+$wgUseSquid = true;
+$wgSquidServers = [ 'proxy' ];
+$wgUsePrivateIPs = true;
+//Use $wgSquidServersNoPurge if you don't want MediaWiki to purge modified pages
+//$wgSquidServersNoPurge = array('127.0.0.1');
+
 ####################### Bundled extensions #########################
 wfLoadExtension( 'Cite' );
 wfLoadExtension( 'CiteThisPage' );
@@ -152,7 +160,7 @@ $wgHiddenPrefs[] = 'visualeditor-enable';
 // OPTIONAL: Enable VisualEditor's experimental code features
 #$wgDefaultUserOptions['visualeditor-enable-experimental'] = 1;
 
-$wgVirtualRestConfig['modules']['parsoid'] = array(
+$wgVirtualRestConfig['modules']['parsoid'] = [
 	// URL to the Parsoid instance
 	// Use port 8142 if you use the Debian package
 	'url' => 'http://parsoid:8000',
@@ -160,7 +168,16 @@ $wgVirtualRestConfig['modules']['parsoid'] = array(
 	'domain' => 'localhost',
 	// Parsoid "prefix", see below (optional)
 	'prefix' => 'localhost'
-);
+];
+
+$wgVirtualRestConfig['modules']['restbase'] = [
+  'url' => "http://restbase:7231",
+  'domain' => 'localhost',
+  'parsoidCompat' => false
+];
+
+$wgVisualEditorRestbaseURL = "$wgServer/api/rest_v1/page/html/";
+$wgVisualEditorFullRestbaseURL = "$wgServer/api/rest_";
 
 ########################## CirrusSearch ###########################
 wfLoadExtension( 'Elastica' );

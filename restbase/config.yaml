@@ -1,0 +1,78 @@
+# RESTBase config for small wiki installs
+#
+# - sqlite backend
+# - parsoid at http://localhost:8142
+# - wiki at http://localhost/w/api.php
+#
+# Quick setup:
+# - npm install
+#   If you see errors about sqlite, you might have to `apt-get install
+#   libsqlite3-dev`.
+# - cp config.example.yaml config.yaml
+# - double-check and possibly modify lines marked with XXX, then start restbase with
+#
+#   node server
+#
+# - If all went well, http://localhost:7231/localhost/v1/page/html/Main_Page
+# should show your wiki's [[Main Page]].
+
+services:
+  - name: restbase
+    module: hyperswitch
+    conf:
+      port: 7231
+      salt: secret
+      default_page_size: 125
+      user_agent: RESTBase
+      ui_name: RESTBase
+      ui_url: https://www.mediawiki.org/wiki/RESTBase
+      ui_title: RESTBase docs
+      spec:
+        x-request-filters:
+          - path: lib/security_response_header_filter.js
+        x-sub-request-filters:
+          - type: default
+            name: http
+            options:
+            allow:
+              - pattern: '{env(MW_API_URL,http://web/w/api.php)}'
+                forward_headers: true
+              - pattern: '{env(MW_PARSOID_URL,http://parsoid:8000)}'
+                forward_headers: true
+              - pattern: /^https?:\/\//
+        paths:
+          /{domain:localhost}:
+            x-modules:
+              - path: projects/example.yaml
+                options:
+                  action:
+                    # XXX Check API URL!
+                    apiUriTemplate: '{env(MW_API_URL,http://web/w/api.php)}'
+                    # XXX Check the base RESTBase URI
+                    baseUriTemplate: "{{'http://{domain}/api/rest_v1'}}"
+                  parsoid:
+                    # XXX Check Parsoid URL!
+                    host: '{env(MW_PARSOID_URL,http://parsoid:8000)}'
+                  table:
+                    backend: sqlite
+                    dbname: /data/restbase.sqlite3
+                    pool_idle_timeout: 20000
+                    retry_delay: 250
+                    retry_limit: 10
+                    show_sql: false
+#                  citoid:
+#                    host: '{env(CITOID_URI,http://localhost:1970)}'
+#                  mathoid:
+#                    host: '{env(MATHOID_HOST_PORT,http://localhost:10044)}'
+#                  mobileapps:
+#                    host: '{env(MOBILEAPPS_URI,http://localhost:8888)}'
+                  purged_cache_control: s-maxage=0, max-age=86400
+                  purged_cache_control_client_cache: s-maxage=0, max-age=300
+
+# Finally, a standard service-runner config.
+info:
+  name: restbase
+
+logging:
+  name: restbase
+  level: info

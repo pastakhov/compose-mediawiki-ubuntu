@@ -2,5 +2,5 @@
 
 set -e
 
-cd /var/lib/parsoid
+cd $PARSOID_HOME
 nodejs bin/server.js 
