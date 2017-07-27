@@ -51,6 +51,8 @@ By default the public port for connections is 8080:
 ```
 You are welcome to change it to any you would like, just note: *make sure that `MW_SITE_SERVER` has correct value*
 
+### web
+
 #### environment
 
 - `MW_SITE_SERVER` configures [$wgServer](https://www.mediawiki.org/wiki/Manual:$wgServer), set this to the server host and include the protocol like `http://my-wiki:8080` 
