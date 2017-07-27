@@ -8,12 +8,20 @@ services:
             - MYSQL_ROOT_HOST=%
             - MYSQL_ROOT_PASSWORD=3dodPaTXF5
 
+    proxy:
+        build:
+            context: ./proxy
+            dockerfile: Dockerfile
+        links:
+            - web
+            - restbase
+        ports:
+            - "8080:80"
+
     web:
         build: 
             context: ./web
             dockerfile: Dockerfile
-        ports:
-            - "8080:80"
         links:
             - db
             - elasticsearch

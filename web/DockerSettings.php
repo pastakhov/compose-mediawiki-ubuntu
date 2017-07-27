@@ -56,6 +56,14 @@ $wgMemCachedServers = [ 'memcache:11211' ];
 $wgSessionsInObjectCache = true; # optional
 $wgSessionCacheType = CACHE_MEMCACHED; # optional
 
+# Use Varnish accelerator
+# https://www.mediawiki.org/wiki/Manual:Varnish_caching
+$wgUseSquid = true;
+$wgSquidServers = [ 'proxy' ];
+$wgUsePrivateIPs = true;
+//Use $wgSquidServersNoPurge if you don't want MediaWiki to purge modified pages
+//$wgSquidServersNoPurge = array('127.0.0.1');
+
 ####################### Bundled extensions #########################
 wfLoadExtension( 'Cite' );
 wfLoadExtension( 'CiteThisPage' );
@@ -167,6 +175,9 @@ $wgVirtualRestConfig['modules']['restbase'] = [
   'domain' => 'localhost',
   'parsoidCompat' => false
 ];
+
+$wgVisualEditorRestbaseURL = "$wgServer/api/rest_v1/page/html/";
+$wgVisualEditorFullRestbaseURL = "$wgServer/api/rest_";
 
 ########################## CirrusSearch ###########################
 wfLoadExtension( 'Elastica' );

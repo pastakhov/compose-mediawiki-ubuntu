@@ -26,6 +26,9 @@ paths:
             version: 1.0.0
             title: Wikimedia REST API
             description: Welcome to your RESTBase API.
+          # Override the base path for host-based (proxied) requests. In our case,
+          # we proxy https://{domain}/api/rest_v1/ to the API.
+          x-host-basePath: /api/rest_v1
           x-route-filters:
             - path: ./lib/normalize_title_filter.js
               options:

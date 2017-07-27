@@ -49,7 +49,7 @@ services:
                     # XXX Check API URL!
                     apiUriTemplate: '{env(MW_API_URL,http://web/w/api.php)}'
                     # XXX Check the base RESTBase URI
-                    baseUriTemplate: "{{'http://restbase:7231/localhost/v1'}}"
+                    baseUriTemplate: "{{'http://{domain}/api/rest_v1'}}"
                   parsoid:
                     # XXX Check Parsoid URL!
                     host: '{env(MW_PARSOID_URL,http://parsoid:8000)}'
