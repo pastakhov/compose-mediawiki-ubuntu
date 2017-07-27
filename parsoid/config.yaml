@@ -95,3 +95,5 @@ services:
         # Leaving it undefined (the default) will use the same URI as the MW API,
         # changing api.php for load.php.
         #modulesLoadURI: 'http://example.org/load.php'
+
+num_workers: '{env(NUM_WORKERS,1)}'

@@ -51,6 +51,18 @@ By default the public port for connections is 8080:
 ```
 You are welcome to change it to any you would like, just note: *make sure that `MW_SITE_SERVER` has correct value*
 
+### parsoid
+
+#### environment
+
+- `NUM_WORKERS` defines the number of work processes for the parsoid service
+
+### restbase
+
+#### environment
+
+- `NUM_WORKERS` defines the number of work processes for the restbase service
+
 ### web
 
 #### environment

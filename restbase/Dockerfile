@@ -19,14 +19,18 @@ RUN set -x; \
     && ln -s /usr/bin/nodejs /usr/bin/node
 
 ENV RB_HOME=/var/lib/restbase \
-    RB_DATA=/data
+    RB_DATA=/data \
+    RB_VERSION=0.16.9
 
 # restbase setup
 RUN set -x; \
     # Core
     mkdir -p $RB_HOME \
     && git clone \
+        --branch v${RB_VERSION} \
+        --single-branch \
         --depth 1 \
+        --quiet \
         https://github.com/wikimedia/restbase.git \
         /var/lib/restbase \
     && cd $RB_HOME \

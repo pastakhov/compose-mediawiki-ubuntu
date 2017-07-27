@@ -76,3 +76,5 @@ info:
 logging:
   name: restbase
   level: info
+
+num_workers: '{env(NUM_WORKERS,1)}'

@@ -18,14 +18,18 @@ RUN set -x; \
     npm install -g npm \
     && ln -s /usr/bin/nodejs /usr/bin/node
 
-ENV PARSOID_HOME=/var/lib/parsoid
+ENV PARSOID_HOME=/var/lib/parsoid \
+    PARSOID_VERSION=0.7.1
 
 # parsoid setup
 RUN set -x; \
     # Core
     mkdir -p $PARSOID_HOME \
     && git clone \
+        --branch v${PARSOID_VERSION} \
+        --single-branch \
         --depth 1 \
+        --quiet \
         https://gerrit.wikimedia.org/r/p/mediawiki/services/parsoid \
         $PARSOID_HOME \
     && cd $PARSOID_HOME \
