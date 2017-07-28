@@ -55,13 +55,13 @@ You are welcome to change it to any you would like, just note: *make sure that `
 
 #### environment
 
-- `NUM_WORKERS` defines the number of work processes for the parsoid service
+- `NUM_WORKERS` defines the number of worker processes to the parsoid service. Set to `0` to run everything in a single process without clustering. Use `ncpu` to run as many workers as there are CPU units.
 
 ### restbase
 
 #### environment
 
-- `NUM_WORKERS` defines the number of work processes for the restbase service
+- `NUM_WORKERS` defines the number of worker processes to the restbase service. Set to `0` to run everything in a single process without clustering. Use `ncpu` to run as many workers as there are CPU units.
 
 ### web
 

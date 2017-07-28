@@ -96,4 +96,7 @@ services:
         # changing api.php for load.php.
         #modulesLoadURI: 'http://example.org/load.php'
 
-num_workers: '{env(NUM_WORKERS,1)}'
+# Number of worker processes to spawn.
+# Set to 0 to run everything in a single process without clustering.
+# Use 'ncpu' to run as many workers as there are CPU units
+num_workers: '{env(NUM_WORKERS,0)}'

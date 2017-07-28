@@ -54,14 +54,14 @@ services:
             context: ./parsoid
             dockerfile: Dockerfile
         environment:
-            - NUM_WORKERS=1
+            - NUM_WORKERS=0
 
     restbase:
         build:
             context: ./restbase
             dockerfile: Dockerfile
         environment:
-            - NUM_WORKERS=1
+            - NUM_WORKERS=0
 
     elasticsearch:
         build:

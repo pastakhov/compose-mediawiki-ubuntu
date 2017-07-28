@@ -3,4 +3,4 @@
 set -e
 
 cd $PARSOID_HOME
-nodejs bin/server.js 
+nodejs bin/server.js
