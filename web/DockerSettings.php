@@ -7,20 +7,23 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 
 ########################### Core Settings ##########################
 # Site language code, should be one of the list in ./languages/Names.php
-$wgLanguageCode = getenv( 'MW_SITE_LANG' ) ?: 'en';
+$wgLanguageCode = getenv( 'MW_SITE_LANG' );
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = getenv( 'MW_SITE_SERVER' ) ?: $wgServer;
+$wgServer = getenv( 'MW_SITE_SERVER' );
+
+# Internal server name as known to Squid, if different than $wgServer.
+#$wgInternalServer = false;
 
 # The name of the site. This is the name of the site as displayed throughout the site.
-$wgSitename  = getenv( 'MW_SITE_NAME' ) ?: $wgSitename;
+$wgSitename  = getenv( 'MW_SITE_NAME' );
 
 # Allow images and other files to be uploaded through the wiki.
 $wgEnableUploads  = getenv( 'MW_ENABLE_UPLOADS' );
 
 # Default skin: you can change the default skin. Use the internal symbolic
 # names, ie 'standard', 'nostalgia', 'cologneblue', 'monobook', 'vector':
-$wgDefaultSkin = getenv( 'MW_DEFAULT_SKIN' ) ?: "vector";
+$wgDefaultSkin = getenv( 'MW_DEFAULT_SKIN' );
 
 # InstantCommons allows wiki to use images from http://commons.wikimedia.org
 $wgUseInstantCommons  = getenv( 'MW_USE_INSTANT_COMMONS' );
@@ -38,7 +41,7 @@ $wgFavicon = "$wgScriptPath/favicon.ico";
 
 ##### Short URLs
 ## https://www.mediawiki.org/wiki/Manual:Short_URL
-$wgArticlePath = "/wiki/$1";
+$wgArticlePath = '/wiki/$1';
 ## Also see mediawiki.conf
 
 ##### Improve performance
@@ -57,10 +60,27 @@ $wgSessionsInObjectCache = true; # optional
 $wgSessionCacheType = CACHE_MEMCACHED; # optional
 
 # Use Varnish accelerator
-# https://www.mediawiki.org/wiki/Manual:Varnish_caching
-$wgUseSquid = true;
-$wgSquidServers = [ 'proxy' ];
-$wgUsePrivateIPs = true;
+$tmpProxy = getenv( 'MW_PROXY_SERVERS' );
+if ( $tmpProxy ) {
+    # https://www.mediawiki.org/wiki/Manual:Varnish_caching
+    $wgUseSquid = true;
+    $wgSquidServers = explode( ',', $tmpProxy ) ;
+    $wgUsePrivateIPs = true;
+    $wgHooks['IsTrustedProxy'][] = function( $ip, &$trusted ) {
+        // Proxy can be set as a name of proxy container
+        if ( !$trusted ) {
+            global $wgSquidServers;
+            foreach ( $wgSquidServers as $proxy ) {
+                if ( !ip2long( $proxy ) ) { // It is name of proxy
+                    if ( gethostbyname( $proxy ) === $ip ) {
+                        $trusted = true;
+                        return;
+                    }
+                }
+            }
+        }
+    };
+}
 //Use $wgSquidServersNoPurge if you don't want MediaWiki to purge modified pages
 //$wgSquidServersNoPurge = array('127.0.0.1');
 

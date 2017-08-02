@@ -80,6 +80,9 @@ You are welcome to change it to any you would like, just note: *make sure that `
 - `MW_DB_PASS` specifies database user password
 - `MW_DB_INSTALLDB_USER` specifies database superuser name for create database and user specified above
 - `MW_DB_INSTALLDB_PASS` specifies database superuser password, should be the same as `MYSQL_ROOT_PASSWORD` in db section.
+- `MW_PROXY_SERVERS` (comma separated values) configures [$wgSquidServers](https://www.mediawiki.org/wiki/Manual:$wgSquidServers). Set empty if no reverse proxy server used.
+- `PHP_LOG_ERRORS` specifies `log_errors` parameter in `php.ini` file.
+- `PHP_ERROR_REPORTING` specifies `error_reporting` parameter in `php.ini` file. `E_ALL` by default, on production should be changed to `E_ALL & ~E_DEPRECATED & ~E_STRICT`.
 
 ## LocalSettings.php
 
@@ -101,14 +104,13 @@ For change the favicon just replace the `web/favicon.ico` file by your favicon f
 
 **How do I rebuild the containers to accept changes to the settings?**
 Just use the command:
+
 ```sh
-docker-compose build
+docker-compose up --build
 ```
-Then restart containers by:
-```sh
-docker-compose stop
-docker-compose up
-```
+
+It picks up the changes by stopping and recreating the containers.
+
 **Why should I rebuild the container every time I change the settings?**
 In this case you are able to check on changes locally before deploy ones to your server.
 This solution significantly reduces the likelihood that something will be broken on your server when you change the settings.

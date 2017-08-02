@@ -43,6 +43,9 @@ services:
             - MW_DB_INSTALLDB_USER=root
             - MW_DB_INSTALLDB_PASS=3dodPaTXF5
             - MW_AUTOUPDATE=true
+            - MW_PROXY_SERVERS=proxy
+            - PHP_LOG_ERRORS=On
+            - PHP_ERROR_REPORTING=E_ALL #Production Value: E_ALL & ~E_DEPRECATED & ~E_STRICT
 
     memcache:
         build:

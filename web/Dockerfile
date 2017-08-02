@@ -38,7 +38,14 @@ ENV MW_VERSION=REL1_28 \
     MW_HOME=/var/www/html/w \
     MW_VOLUME=/mediawiki \
     WWW_USER=www-data \
-    WWW_GROUP=www-data
+    WWW_GROUP=www-data \
+    APACHE_LOG_DIR=/var/log/apache2
+
+# logs should go to stdout / stderr
+RUN set -ex \
+    && ln -sfT /dev/stderr "$APACHE_LOG_DIR/error.log" \
+    && ln -sfT /dev/stdout "$APACHE_LOG_DIR/access.log" \
+    && ln -sfT /dev/stdout "$APACHE_LOG_DIR/other_vhosts_access.log"
 
 ##### MediaWiki Core setup
 RUN set -x; \
@@ -137,7 +144,12 @@ ENV MW_MAINTENANCE_UPDATE=3 \
     MW_MAINTENANCE_CIRRUSSEARCH_FORCEINDEX=1 \
     MW_MAINTENANCE_ULS_INDEXER=1 \
     MW_MAINTENANCE_POPULATECONTENTMODEL=1 \
-    MW_SCRIPT_CLDR_REBUILD=1
+    MW_SCRIPT_CLDR_REBUILD=1 \
+    MW_SITE_NAME=MediaWiki \
+    MW_SITE_LANG=en \
+    MW_DEFAULT_SKIN=vector \
+    PHP_LOG_ERRORS=On \
+    PHP_ERROR_REPORTING=E_ALL
 
 EXPOSE 80
 
