@@ -150,33 +150,50 @@ if [ ! -e "$MW_HOME/LocalSettings.php" ]; then
 fi
 
 ########## Run maintenance scripts ##########
-echo 'Check for the need to run maintenance scripts'
-### maintenance/update.php
-run_maintenance_script_if_needed 'maintenance_update' "$MW_VERSION-$MW_MAINTENANCE_UPDATE" \
-    'maintenance/update.php --quick' 
+if [ $MW_AUTOUPDATE == 'true' ]; then
+    echo 'Check for the need to run maintenance scripts'
+    ### maintenance/update.php
+    run_maintenance_script_if_needed 'maintenance_update' "$MW_VERSION-$MW_MAINTENANCE_UPDATE" \
+        'maintenance/update.php --quick'
 
-### CirrusSearch
-run_maintenance_script_if_needed 'maintenance_CirrusSearch_updateConfig' "$MW_MAINTENANCE_CIRRUSSEARCH_UPDATECONFIG" \
-    'extensions/CirrusSearch/maintenance/updateSearchIndexConfig.php'
+    ### CirrusSearch
+    if [ "$MW_SEARCH_TYPE" == 'CirrusSearch' ]; then
+        run_maintenance_script_if_needed 'maintenance_CirrusSearch_updateConfig' "$MW_MAINTENANCE_CIRRUSSEARCH_UPDATECONFIG" \
+            'extensions/CirrusSearch/maintenance/updateSearchIndexConfig.php'
 
-run_maintenance_script_if_needed 'maintenance_CirrusSearch_forceIndex' "$MW_MAINTENANCE_CIRRUSSEARCH_FORCEINDEX" \
-    'extensions/CirrusSearch/maintenance/forceSearchIndex.php --skipLinks --indexOnSkip' \
-    'extensions/CirrusSearch/maintenance/forceSearchIndex.php –skipParse'
+        run_maintenance_script_if_needed 'maintenance_CirrusSearch_forceIndex' "$MW_MAINTENANCE_CIRRUSSEARCH_FORCEINDEX" \
+            'extensions/CirrusSearch/maintenance/forceSearchIndex.php --skipLinks --indexOnSkip' \
+            'extensions/CirrusSearch/maintenance/forceSearchIndex.php –skipParse'
+    fi
 
-### cldr extension
-run_script_if_needed 'script_cldr_rebuild' "$MW_VERSION-$MW_SCRIPT_CLDR_REBUILD" \
-    'set -x; cd $MW_HOME/extensions/cldr && wget -q http://www.unicode.org/Public/cldr/latest/core.zip && unzip -q core.zip -d core && php rebuild.php && set +x;'
+    ### cldr extension
+    if [ -n "$MW_SCRIPT_CLDR_REBUILD" ]; then
+    run_script_if_needed 'script_cldr_rebuild' "$MW_VERSION-$MW_SCRIPT_CLDR_REBUILD" \
+        'set -x; cd $MW_HOME/extensions/cldr && wget -q http://www.unicode.org/Public/cldr/latest/core.zip && unzip -q core.zip -d core && php rebuild.php && set +x;'
 
-### UniversalLanguageSelector extension
-run_maintenance_script_if_needed 'maintenance_ULS_indexer' "$MW_VERSION-$MW_SCRIPT_CLDR_REBUILD-$MW_MAINTENANCE_ULS_INDEXER" \
-    'extensions/UniversalLanguageSelector/data/LanguageNameIndexer.php'
+        if [ -n "$MW_MAINTENANCE_ULS_INDEXER" ]; then
+            ### UniversalLanguageSelector extension
+            run_maintenance_script_if_needed 'maintenance_ULS_indexer' "$MW_VERSION-$MW_SCRIPT_CLDR_REBUILD-$MW_MAINTENANCE_ULS_INDEXER" \
+                'extensions/UniversalLanguageSelector/data/LanguageNameIndexer.php'
+        fi
+    fi
 
-### Flow extension
-# https://www.mediawiki.org/wiki/Extension:Flow#Enabling_or_disabling_Flow
-run_maintenance_script_if_needed 'maintenance_populateContentModel' "$MW_MAINTENANCE_POPULATECONTENTMODEL" \
-    'maintenance/populateContentModel.php --ns=all --table=revision' \
-    'maintenance/populateContentModel.php --ns=all --table=archive' \
-    'maintenance/populateContentModel.php --ns=all --table=page'
+    ### Flow extension
+    if [ -n "$MW_FLOW_NAMESPACES" ]; then
+        # https://www.mediawiki.org/wiki/Extension:Flow#Enabling_or_disabling_Flow
+        run_maintenance_script_if_needed 'maintenance_populateContentModel' "$MW_FLOW_NAMESPACES" \
+            'maintenance/populateContentModel.php --ns=all --table=revision' \
+            'maintenance/populateContentModel.php --ns=all --table=archive' \
+            'maintenance/populateContentModel.php --ns=all --table=page'
+
+# https://phabricator.wikimedia.org/T172369
+#        if [ "$MW_SEARCH_TYPE" == 'CirrusSearch' ]; then
+#            # see https://www.mediawiki.org/wiki/Flow/Architecture/Search
+#            run_maintenance_script_if_needed 'maintenance_FlowSearchConfig_CirrusSearch' "$MW_MAINTENANCE_CIRRUSSEARCH_UPDATECONFIG" \
+#                'extensions/Flow/maintenance/FlowSearchConfig.php'
+#        fi
+    fi
+fi
 
 # Make sure we're not confused by old, incompletely-shutdown httpd
 # context after restarting the container.  httpd won't start correctly

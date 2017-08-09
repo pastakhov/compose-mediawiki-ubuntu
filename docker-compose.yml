@@ -1,9 +1,7 @@
 version: '2'
 services:
     db:
-        build: 
-            context: ./db
-            dockerfile: Dockerfile
+        image: pastakhov/mysql:5.7
         environment:
             - MYSQL_ROOT_HOST=%
             - MYSQL_ROOT_PASSWORD=3dodPaTXF5
@@ -25,7 +23,7 @@ services:
         links:
             - db
             - elasticsearch
-            - memcache
+            - memcached
             - parsoid
             - restbase
         environment:
@@ -44,27 +42,36 @@ services:
             - MW_DB_INSTALLDB_PASS=3dodPaTXF5
             - MW_AUTOUPDATE=true
             - MW_PROXY_SERVERS=proxy
+            - MW_MAIN_CACHE_TYPE=CACHE_MEMCACHED
+            - MW_MEMCACHED_SERVERS=memcached:11211
+            - MW_SEARCH_TYPE=CirrusSearch
+            - MW_CIRRUS_SEARCH_SERVERS=elasticsearch
+            - MW_REST_DOMAIN=web
+            - MW_REST_PARSOID_URL=http://parsoid:8000
+            - MW_REST_RESTBASE_URL=http://restbase:7231
+            - MW_REST_RESTBASE_PROXY_PATH=/api/rest_
+            - MW_FLOW_NAMESPACES=NS_TALK,NS_USER_TALK
             - PHP_LOG_ERRORS=On
             - PHP_ERROR_REPORTING=E_ALL #Production Value: E_ALL & ~E_DEPRECATED & ~E_STRICT
 
-    memcache:
-        build:
-            context: ./memcache
-            dockerfile: Dockerfile
+    memcached:
+        image: memcached
 
     parsoid:
-        build:
-            context: ./parsoid
-            dockerfile: Dockerfile
+        image: pastakhov/parsoid:0.7.1
         environment:
-            - NUM_WORKERS=0
+            - PARSOID_NUM_WORKERS=0
+            - PARSOID_DOMAIN_web=http://web/w/api.php
 
     restbase:
-        build:
-            context: ./restbase
-            dockerfile: Dockerfile
+        image: pastakhov/restbase:0.16.9
         environment:
-            - NUM_WORKERS=0
+            - RB_CONF_NUM_WORKERS=0
+            - RB_CONF_DOMAIN_web=http://web/w/api.php
+            - RB_CONF_PARSOID_HOST=http://parsoid:8000
+            - RB_CONF_BASE_URI_TEMPLATE=http://{domain}/api/rest_v1
+            - RB_CONF_API_URI_TEMPLATE=http://{domain}/w/api.php
+            - RB_CONF_LOGGING_LEVEL=info #trace
 
     elasticsearch:
         build:

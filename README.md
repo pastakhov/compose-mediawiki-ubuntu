@@ -20,15 +20,15 @@ Enjoy with [MediaWiki](https://www.mediawiki.org/) + [VisualEditor](https://www.
 
 Running `sudo docker-compose up` in a checkout of this repository will start containers:
 
-- `db` - A MySQL container, used as the database backend for MediaWiki.
+- `db` - A MySQL [container](https://hub.docker.com/r/pastakhov/mysql/), used as the database backend for MediaWiki.
 - `elasticsearch` - An Elasticsearch container, used as the full-text search engine for MediaWiki
-- `memcache` - A memory object caching system container, used as the cache system for MediaWiki
-- `parsoid` - A bidirectional runtime wikitext parser, used by VisualEditor, Flow and other MediaWiki extensions
+- `memcached` - A memory object caching system [container](https://hub.docker.com/_/memcached/), used as the cache system for MediaWiki
+- `parsoid` - A [bidirectional runtime wikitext parser](https://www.mediawiki.org/wiki/Parsoid) [container](https://hub.docker.com/r/pastakhov/parsoid/), used by [VisualEditor](https://www.mediawiki.org/wiki/VisualEditor), [Flow](https://www.mediawiki.org/wiki/Flow) and other [MediaWiki extensions](https://www.mediawiki.org/wiki/Extensions)
 - `proxy` - A reverse proxy server [Varnish](https://www.mediawiki.org/wiki/Manual:Varnish_caching) which reduces the time taken to serve often-requested pages
-- `restbase` - A caching / storing API proxy backing the REST API
+- `restbase` - A [REST storage and service dispatcher](https://www.mediawiki.org/wiki/RESTBase) [container](https://hub.docker.com/r/pastakhov/restbase/)
 - `web` - An Apache/MediaWiki container with PHP 7.0 and MediaWiki 1.28
 
-All containers are based on [Ubuntu](https://hub.docker.com/_/ubuntu/) 16.04
+The elasticsearch, parsoid, restbase, proxy, web containers are based on [Ubuntu](https://hub.docker.com/_/ubuntu/) 16.04
 
 ## Settings
 
@@ -53,19 +53,26 @@ You are welcome to change it to any you would like, just note: *make sure that `
 
 ### parsoid
 
-#### environment
+#### environment variables
 
-- `NUM_WORKERS` defines the number of worker processes to the parsoid service. Set to `0` to run everything in a single process without clustering. Use `ncpu` to run as many workers as there are CPU units.
+- `PARSOID_DOMAIN_{domain}` defines uri and domain for the Parsoid service. The '{domain}' word should be the same as the `MW_REST_DOMAIN` parameter in the web container. You can specify any number of such variables (by the number of domains used for the service).
+
+More details on [Parsoid service](https://github.com/pastakhov/docker-parsoid) page.
 
 ### restbase
 
-#### environment
+#### environment variables
 
-- `NUM_WORKERS` defines the number of worker processes to the restbase service. Set to `0` to run everything in a single process without clustering. Use `ncpu` to run as many workers as there are CPU units.
+- `RB_CONF_DOMAIN_{domain}` defines uri and domain for the RESTBase service. The '{domain}' word should be the same as the `MW_REST_DOMAIN` parameter in the web container. You can specify any number of such variables (by the number of domains used for the service). Example: `RB_CONF_DOMAIN_web=http://web/w/api.php`.
+- `RB_CONF_PARSOID_HOST` defines uri to Parsoid service. Example: `http://parsoid:8000`.
+- `RB_CONF_API_URI_TEMPLATE` defines uri to the MediaWiki API. Example :`http://{domain}/w/api.php`
+- `RB_CONF_BASE_URI_TEMPLATE` defines base uri for the links to RESTBase service. Example: `http://{domain}/api/rest_v1`.
+
+More details on [RESTbase service](https://github.com/pastakhov/docker-restbase) page.
 
 ### web
 
-#### environment
+#### environment variables
 
 - `MW_SITE_SERVER` configures [$wgServer](https://www.mediawiki.org/wiki/Manual:$wgServer), set this to the server host and include the protocol like `http://my-wiki:8080` 
 - `MW_SITE_NAME` configures [$wgSitename](https://www.mediawiki.org/wiki/Manual:$wgSitename)
@@ -80,7 +87,15 @@ You are welcome to change it to any you would like, just note: *make sure that `
 - `MW_DB_PASS` specifies database user password
 - `MW_DB_INSTALLDB_USER` specifies database superuser name for create database and user specified above
 - `MW_DB_INSTALLDB_PASS` specifies database superuser password, should be the same as `MYSQL_ROOT_PASSWORD` in db section.
-- `MW_PROXY_SERVERS` (comma separated values) configures [$wgSquidServers](https://www.mediawiki.org/wiki/Manual:$wgSquidServers). Set empty if no reverse proxy server used.
+- `MW_PROXY_SERVERS` (comma separated values) configures [$wgSquidServers](https://www.mediawiki.org/wiki/Manual:$wgSquidServers). Leave empty if no reverse proxy server used.
+- `MW_MAIN_CACHE_TYPE` configures [$wgMainCacheType](https://www.mediawiki.org/wiki/Manual:$wgMainCacheType). `MW_MEMCACHED_SERVERS` should be provided for `CACHE_MEMCACHED`.
+- `MW_MEMCACHED_SERVERS` (comma separated values) configures [$wgMemCachedServers](https://www.mediawiki.org/wiki/Manual:$wgMemCachedServers).
+- `MW_SEARCH_TYPE` configures [$wgSearchType](https://www.mediawiki.org/wiki/Manual:$wgSearchType). Leave empty or set `CirrusSearch` for MediaWiki using [Elasticsearch](https://www.mediawiki.org/wiki/Extension:CirrusSearch). `MW_CIRRUS_SEARCH_SERVERS` should be provided for `CirrusSearch`.
+- `MW_FLOW_NAMESPACES` (comma separated values) specifies namespaces where the Flow extension should be enabled.
+- `MW_REST_DOMAIN` specifies the domain parameter used for the REST services such as Parsoid and RESTBase, generally should be the same as the name of the container.
+- `MW_REST_RESTBASE_PROXY_PATH` if reverse proxy are used defines path for the $wgVisualEditorFullRestbaseURL and $wgVisualEditorRestbaseURL variables. Example: `/api/rest_`.
+- `MW_AUTOUPDATE` if `true` (by default) run needed maintenance scripts automatically before web server start.
+- `MW_SHOW_EXCEPTION_DETAILS` if `true` (by default) configures [$wgShowExceptionDetails](https://www.mediawiki.org/wiki/Manual:$wgShowExceptionDetails) as true.
 - `PHP_LOG_ERRORS` specifies `log_errors` parameter in `php.ini` file.
 - `PHP_ERROR_REPORTING` specifies `error_reporting` parameter in `php.ini` file. `E_ALL` by default, on production should be changed to `E_ALL & ~E_DEPRECATED & ~E_STRICT`.
 
@@ -88,7 +103,7 @@ You are welcome to change it to any you would like, just note: *make sure that `
 
 The [LocalSettings.php](https://www.mediawiki.org/wiki/Manual:LocalSettings.php) devided to three parts:
 - LocalSettings.php will be created automatically upon container startup, contains settings specific to the MediaWiki installed instance such as database connection, [$wgSecretKey](https://www.mediawiki.org/wiki/Manual:$wgSecretKey) and etc. **Should not be changed**
-- DockerSettings.php сontains settings specific to the released containers such as database server name, path to programs, installed extensions, etc. **Should be changed if you make changes in containers only**
+- DockerSettings.php сontains settings specific to the released containers such as database server name, path to programs, installed extensions, etc. **Should be changed if you make changes to the containers only**
 - CustomSettings.php - contains user defined settings such as user rights, extensions settings and etc. **You should make changes there**. 
 `CustomSettings.php` placed in folder `web` And will be copied to the container during build
 
@@ -151,16 +166,12 @@ The upgrade process is fully automated and includes the launch of all necessary 
 
 ## Data volumes
 
-* `db`
-    * `/var/lib/mysql` - database files
 * `elasticsearch`
     * `/elasticsearch` - data and log files
-* `restbase`
-    * `/data` - sqlite files
 * `web`
     * `/var/www/html/w/images` - files uploaded by users
     * `/mediawiki` - contains info about the MediaWiki instance
-    
+
 # List of installed extensions
 
 ## Bundled Skins

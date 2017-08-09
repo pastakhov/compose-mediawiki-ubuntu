@@ -5,6 +5,10 @@ if ( !defined( 'MEDIAWIKI' ) ) {
     exit;
 }
 
+if ( getenv( 'MW_SHOW_EXCEPTION_DETAILS' ) === 'true' ) {
+    $wgShowExceptionDetails = true;
+}
+
 ########################### Core Settings ##########################
 # Site language code, should be one of the list in ./languages/Names.php
 $wgLanguageCode = getenv( 'MW_SITE_LANG' );
@@ -45,26 +49,42 @@ $wgArticlePath = '/wiki/$1';
 ## Also see mediawiki.conf
 
 ##### Improve performance
-# APC has several problems in latest versions of WediaWiki and extensions, for example:
-# https://www.mediawiki.org/wiki/Extension:Flow#.22Exception_Caught:_CAS_is_not_implemented_in_Xyz.22
 # https://www.mediawiki.org/wiki/Manual:$wgMainCacheType
-#$wgMainCacheType = CACHE_ACCEL;
-#$wgSessionCacheType = CACHE_DB; #This may cause problems when CACHE_ACCEL is used
-
-# Use Memcached, see https://www.mediawiki.org/wiki/Memcached
-$wgMainCacheType = CACHE_MEMCACHED;
-$wgParserCacheType = CACHE_MEMCACHED; # optional
-$wgMessageCacheType = CACHE_MEMCACHED; # optional
-$wgMemCachedServers = [ 'memcache:11211' ];
-$wgSessionsInObjectCache = true; # optional
-$wgSessionCacheType = CACHE_MEMCACHED; # optional
+switch ( getenv( 'MW_MAIN_CACHE_TYPE' ) ) {
+    case 'CACHE_ACCEL':
+        # APC has several problems in latest versions of WediaWiki and extensions, for example:
+        # https://www.mediawiki.org/wiki/Extension:Flow#.22Exception_Caught:_CAS_is_not_implemented_in_Xyz.22
+        $wgMainCacheType = CACHE_ACCEL;
+        $wgSessionCacheType = CACHE_DB; #This may cause problems when CACHE_ACCEL is used
+        break;
+    case 'CACHE_DB':
+        $wgMainCacheType = CACHE_DB;
+        break;
+    case 'CACHE_DB':
+        $wgMainCacheType = CACHE_DB;
+        break;
+    case 'CACHE_ANYTHING':
+        $wgMainCacheType = CACHE_ANYTHING;
+        break;
+    case 'CACHE_MEMCACHED':
+        # Use Memcached, see https://www.mediawiki.org/wiki/Memcached
+        $wgMainCacheType = CACHE_MEMCACHED;
+        $wgParserCacheType = CACHE_MEMCACHED; # optional
+        $wgMessageCacheType = CACHE_MEMCACHED; # optional
+        $wgMemCachedServers = explode( ',', getenv( 'MW_MEMCACHED_SERVERS' ) );
+        $wgSessionsInObjectCache = true; # optional
+        $wgSessionCacheType = CACHE_MEMCACHED; # optional
+        break;
+    default:
+        $wgMainCacheType = CACHE_NONE;
+}
 
 # Use Varnish accelerator
 $tmpProxy = getenv( 'MW_PROXY_SERVERS' );
 if ( $tmpProxy ) {
     # https://www.mediawiki.org/wiki/Manual:Varnish_caching
     $wgUseSquid = true;
-    $wgSquidServers = explode( ',', $tmpProxy ) ;
+    $wgSquidServers = explode( ',', $tmpProxy );
     $wgUsePrivateIPs = true;
     $wgHooks['IsTrustedProxy'][] = function( $ip, &$trusted ) {
         // Proxy can be set as a name of proxy container
@@ -126,21 +146,25 @@ $wgPygmentizePath = '/usr/bin/pygmentize';
 wfLoadExtension( 'Interwiki' );
 $wgGroupPermissions['sysop']['interwiki'] = true;
 
-##################### Commonly used extensions ####################
+##################### Commonly used extensions #####################
+# https://www.mediawiki.org/wiki/Extension:Flow
+$flowNamespaces = getenv( 'MW_FLOW_NAMESPACES' );
+if ( $flowNamespaces ) {
+    require_once "$IP/extensions/Flow/Flow.php"; // REL1_29+ wfLoadExtension( 'Flow' );
+    $wgFlowContentFormat = 'html';
+    foreach ( explode( ',', $flowNamespaces ) as $ns ) {
+        $wgNamespaceContentModels[ constant( $ns ) ] = 'flow-board';
+    }
+}
+
 wfLoadExtension( 'Thanks' );
 require_once "$IP/extensions/Echo/Echo.php"; // REL1_29+ wfLoadExtension( 'Echo' );
-
-require_once "$IP/extensions/Flow/Flow.php"; // REL1_29+ wfLoadExtension( 'Flow' );
-$wgFlowContentFormat = 'html';
-$wgFlowSearchServers = [ 'elasticsearch' ];
-$wgNamespaceContentModels[NS_TALK] = 'flow-board';
-$wgNamespaceContentModels[NS_USER_TALK] = 'flow-board';
 
 wfLoadExtension( 'CheckUser' );
 $wgGroupPermissions['sysop']['checkuser'] = true;
 $wgGroupPermissions['sysop']['checkuser-log'] = true;
 
-############### MediaWiki Language Extension Bundle ###############
+############### MediaWiki Language Extension Bundle ################
 wfLoadExtension( 'Babel' );
 
 wfLoadExtension( 'CleanChanges' );
@@ -165,45 +189,66 @@ $wgDefaultUserOptions['wikieditor-preview'] = 1;
 $wgDefaultUserOptions['wikieditor-publish'] = 1;
 
 ########################### VisualEditor ###########################
-wfLoadExtension( 'VisualEditor' );
+$tmpRestDomain = getenv( 'MW_REST_DOMAIN' );
+$tmpRestParsoidUrl = getenv( 'MW_REST_PARSOID_URL' );
+if ( $tmpRestDomain && $tmpRestParsoidUrl ) {
+    wfLoadExtension( 'VisualEditor' );
 
-// Enable by default for everybody
-$wgDefaultUserOptions['visualeditor-enable'] = 1;
+    // Enable by default for everybody
+    $wgDefaultUserOptions['visualeditor-enable'] = 1;
 
-// Optional: Set VisualEditor as the default for anonymous users
-// otherwise they will have to switch to VE
-// $wgDefaultUserOptions['visualeditor-editor'] = "visualeditor";
+    // Optional: Set VisualEditor as the default for anonymous users
+    // otherwise they will have to switch to VE
+    // $wgDefaultUserOptions['visualeditor-editor'] = "visualeditor";
 
-// Don't allow users to disable it
-$wgHiddenPrefs[] = 'visualeditor-enable';
+    // Don't allow users to disable it
+    $wgHiddenPrefs[] = 'visualeditor-enable';
 
-// OPTIONAL: Enable VisualEditor's experimental code features
-#$wgDefaultUserOptions['visualeditor-enable-experimental'] = 1;
+    // OPTIONAL: Enable VisualEditor's experimental code features
+    #$wgDefaultUserOptions['visualeditor-enable-experimental'] = 1;
 
-$wgVirtualRestConfig['modules']['parsoid'] = [
-	// URL to the Parsoid instance
-	// Use port 8142 if you use the Debian package
-	'url' => 'http://parsoid:8000',
-	// Parsoid "domain", see below (optional)
-	'domain' => 'localhost',
-	// Parsoid "prefix", see below (optional)
-	'prefix' => 'localhost'
-];
+    $wgVirtualRestConfig['modules']['parsoid'] = [
+            // URL to the Parsoid instance
+            'url' => $tmpRestParsoidUrl,
+            // Parsoid "domain", see below (optional)
+            'domain' => $tmpRestDomain,
+            // Parsoid "prefix", see below (optional)
+            'prefix' => $tmpRestDomain,
+    ];
 
-$wgVirtualRestConfig['modules']['restbase'] = [
-  'url' => "http://restbase:7231",
-  'domain' => 'localhost',
-  'parsoidCompat' => false
-];
+    $tmpRestRestbaseUrl = getenv( 'MW_REST_RESTBASE_URL' );
+    if ( $tmpRestRestbaseUrl ) {
+        $wgVirtualRestConfig['modules']['restbase'] = [
+        'url' => $tmpRestRestbaseUrl,
+        'domain' => $tmpRestDomain,
+        'parsoidCompat' => false
+        ];
 
-$wgVisualEditorRestbaseURL = "$wgServer/api/rest_v1/page/html/";
-$wgVisualEditorFullRestbaseURL = "$wgServer/api/rest_";
+        $tmpRestProxyPath = getenv( 'MW_REST_RESTBASE_PROXY_PATH' );
+        if ( $tmpProxy && $tmpRestProxyPath ) {
+            $wgVisualEditorFullRestbaseURL = $wgServer . $tmpRestProxyPath;
+        } else {
+            $wgVisualEditorFullRestbaseURL = $wgServer . ':' . getenv( 'MW_REST_RESTBASE_PORT' ) . "/$tmpRestDomain/";
+        }
+        $wgVisualEditorRestbaseURL = $wgVisualEditorFullRestbaseURL . 'v1/page/html/';
+    }
+}
 
-########################## CirrusSearch ###########################
-wfLoadExtension( 'Elastica' );
-require_once "$IP/extensions/CirrusSearch/CirrusSearch.php";
-$wgCirrusSearchServers = [ 'elasticsearch' ];
-$wgSearchType = 'CirrusSearch';
+########################### Search Type ############################
+switch( getenv( 'MW_SEARCH_TYPE' ) ) {
+    case 'CirrusSearch':
+        # https://www.mediawiki.org/wiki/Extension:CirrusSearch
+        wfLoadExtension( 'Elastica' );
+        require_once "$IP/extensions/CirrusSearch/CirrusSearch.php";
+        $wgCirrusSearchServers =  explode( ',', getenv( 'MW_CIRRUS_SEARCH_SERVERS' ) );
+        if ( $flowNamespaces ) {
+            $wgFlowSearchServers = $wgCirrusSearchServers;
+        }
+        $wgSearchType = 'CirrusSearch';
+        break;
+    default:
+        $wgSearchType = null;
+}
 
-######################### Custom Settings #########################
+######################### Custom Settings ##########################
 @include( 'CustomSettings.php' );

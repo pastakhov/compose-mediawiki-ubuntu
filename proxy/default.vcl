@@ -26,8 +26,8 @@ sub vcl_recv {
         set req.http.X-Forwarded-For = client.ip;
 
         if (req.url ~ "^/api/rest_v1") {
-            set req.backend_hint= restbase;
-            set req.url = regsub(req.url, "^/api/rest_v1", "/localhost/v1");
+            set req.backend_hint = restbase;
+            set req.url = regsub(req.url, "^/api/rest_v1", "/web/v1");
             set req.hash_ignore_busy = true;
             return (pass);
         } else {
