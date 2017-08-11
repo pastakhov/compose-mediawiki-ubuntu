@@ -24,7 +24,7 @@ Running `sudo docker-compose up` in a checkout of this repository will start con
 - `elasticsearch` - An Elasticsearch container, used as the full-text search engine for MediaWiki
 - `memcached` - A memory object caching system [container](https://hub.docker.com/_/memcached/), used as the cache system for MediaWiki
 - `parsoid` - A [bidirectional runtime wikitext parser](https://www.mediawiki.org/wiki/Parsoid) [container](https://hub.docker.com/r/pastakhov/parsoid/), used by [VisualEditor](https://www.mediawiki.org/wiki/VisualEditor), [Flow](https://www.mediawiki.org/wiki/Flow) and other [MediaWiki extensions](https://www.mediawiki.org/wiki/Extensions)
-- `proxy` - A reverse proxy server [Varnish](https://www.mediawiki.org/wiki/Manual:Varnish_caching) which reduces the time taken to serve often-requested pages
+- `proxy` - [Varnish reverse proxy server](https://www.mediawiki.org/wiki/Manual:Varnish_caching) [container](https://github.com/pastakhov/docker-mediawiki-varnish/) which reduces the time taken to serve often-requested pages
 - `restbase` - A [REST storage and service dispatcher](https://www.mediawiki.org/wiki/RESTBase) [container](https://hub.docker.com/r/pastakhov/restbase/)
 - `web` - An Apache/MediaWiki container with PHP 7.0 and MediaWiki 1.28
 
@@ -42,6 +42,12 @@ If changed, make sure that `MW_DB_INSTALLDB_PASS` in web section was changed too
 
 ### proxy
 
+#### environment variables
+
+- `PROXY_BACKEND_{name}` defines backend using format 'host:port'. Generally backend name should be the same as container name. Example: `PROXY_BACKEND_web=web:80`.
+
+More details on [Varnish service](https://github.com/pastakhov/docker-mediawiki-varnish/) page.
+
 #### ports
 The proxy container are listening for connections on private port 80.
 By default the public port for connections is 8080:
@@ -57,7 +63,7 @@ You are welcome to change it to any you would like, just note: *make sure that `
 
 - `PARSOID_DOMAIN_{domain}` defines uri and domain for the Parsoid service. The '{domain}' word should be the same as the `MW_REST_DOMAIN` parameter in the web container. You can specify any number of such variables (by the number of domains used for the service).
 
-More details on [Parsoid service](https://github.com/pastakhov/docker-parsoid) page.
+More details on [Parsoid service](https://github.com/pastakhov/docker-parsoid/) page.
 
 ### restbase
 
@@ -68,7 +74,7 @@ More details on [Parsoid service](https://github.com/pastakhov/docker-parsoid) p
 - `RB_CONF_API_URI_TEMPLATE` defines uri to the MediaWiki API. Example :`http://{domain}/w/api.php`
 - `RB_CONF_BASE_URI_TEMPLATE` defines base uri for the links to RESTBase service. Example: `http://{domain}/api/rest_v1`.
 
-More details on [RESTbase service](https://github.com/pastakhov/docker-restbase) page.
+More details on [RESTbase service](https://github.com/pastakhov/docker-restbase/) page.
 
 ### web
 
