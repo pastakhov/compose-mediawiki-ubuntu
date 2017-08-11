@@ -7,14 +7,18 @@ services:
             - MYSQL_ROOT_PASSWORD=3dodPaTXF5
 
     proxy:
-        build:
-            context: ./proxy
-            dockerfile: Dockerfile
+        image: pastakhov/varnish-mediawiki:1.0
         links:
             - web
             - restbase
         ports:
             - "8080:80"
+        environment:
+            - PROXY_BACKEND_web=web:80
+            - PROXY_BACKEND_restbase=restbase:7231
+            - PROXY_RESTBASE_BACKEND=restbase
+            - PROXY_RESTBASE_URL=^/api/rest_v1
+            - PROXY_RESTBASE_SUB=/{backend_hint}/v1
 
     web:
         build: 
