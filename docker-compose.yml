@@ -78,6 +78,4 @@ services:
             - RB_CONF_LOGGING_LEVEL=info #trace
 
     elasticsearch:
-        build:
-            context: ./elasticsearch
-            dockerfile: Dockerfile
+        image: pastakhov/elasticsearch:2.4.5

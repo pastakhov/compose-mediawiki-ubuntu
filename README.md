@@ -21,7 +21,7 @@ Enjoy with [MediaWiki](https://www.mediawiki.org/) + [VisualEditor](https://www.
 Running `sudo docker-compose up` in a checkout of this repository will start containers:
 
 - `db` - A MySQL [container](https://hub.docker.com/r/pastakhov/mysql/), used as the database backend for MediaWiki.
-- `elasticsearch` - An Elasticsearch container, used as the full-text search engine for MediaWiki
+- `elasticsearch` - An [Elasticsearch](https://www.elastic.co/products/elasticsearch) [container](https://github.com/pastakhov/docker-elasticsearch/), used as the full-text search engine for MediaWiki
 - `memcached` - A memory object caching system [container](https://hub.docker.com/_/memcached/), used as the cache system for MediaWiki
 - `parsoid` - A [bidirectional runtime wikitext parser](https://www.mediawiki.org/wiki/Parsoid) [container](https://hub.docker.com/r/pastakhov/parsoid/), used by [VisualEditor](https://www.mediawiki.org/wiki/VisualEditor), [Flow](https://www.mediawiki.org/wiki/Flow) and other [MediaWiki extensions](https://www.mediawiki.org/wiki/Extensions)
 - `proxy` - [Varnish reverse proxy server](https://www.mediawiki.org/wiki/Manual:Varnish_caching) [container](https://github.com/pastakhov/docker-mediawiki-varnish/) which reduces the time taken to serve often-requested pages
@@ -172,8 +172,6 @@ The upgrade process is fully automated and includes the launch of all necessary 
 
 ## Data volumes
 
-* `elasticsearch`
-    * `/elasticsearch` - data and log files
 * `web`
     * `/var/www/html/w/images` - files uploaded by users
     * `/mediawiki` - contains info about the MediaWiki instance
