@@ -257,5 +257,8 @@ wfLoadExtension('MultimediaViewer');
 wfLoadExtension( 'MobileFrontend' );
 $wgMFAutodetectMobileView = true;
 
+######################### ElectronPdfService ##########################
+wfLoadExtension('ElectronPdfService');
+
 ######################### Custom Settings ##########################
 @include( 'CustomSettings.php' );

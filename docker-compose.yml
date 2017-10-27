@@ -82,7 +82,14 @@ services:
             - RB_CONF_BASE_URI_TEMPLATE=http://{domain}/api/rest_v1
             - RB_CONF_API_URI_TEMPLATE=http://{domain}/w/api.php
             - RB_CONF_LOGGING_LEVEL=info #trace
+            - RB_CONF_PDF_URI=http://pdf:3000
 
     elasticsearch:
         image: pastakhov/elasticsearch:2.4.5
         restart: always
+
+    pdf:
+        image: msokk/electron-render-service
+        restart: always
+        environment:
+            RENDERER_ACCESS_KEY: secret
