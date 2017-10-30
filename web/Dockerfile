@@ -49,7 +49,6 @@ RUN set -ex \
 
 ##### MediaWiki Core setup
 RUN set -x; \
-    # Core
     mkdir -p $MW_HOME \
     && git clone \
         --depth 1 \

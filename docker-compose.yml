@@ -8,7 +8,7 @@ services:
 
     proxy:
         image: pastakhov/varnish-mediawiki:1.0
-        links:
+        depends_on:
             - web
             - restbase
         ports:
@@ -24,7 +24,7 @@ services:
         build: 
             context: ./web
             dockerfile: Dockerfile
-        links:
+        depends_on:
             - db
             - elasticsearch
             - memcached
