@@ -150,7 +150,7 @@ $wgGroupPermissions['sysop']['interwiki'] = true;
 # https://www.mediawiki.org/wiki/Extension:Flow
 $flowNamespaces = getenv( 'MW_FLOW_NAMESPACES' );
 if ( $flowNamespaces ) {
-    require_once "$IP/extensions/Flow/Flow.php"; // REL1_29+ wfLoadExtension( 'Flow' );
+    wfLoadExtension( 'Flow' );
     $wgFlowContentFormat = 'html';
     foreach ( explode( ',', $flowNamespaces ) as $ns ) {
         $wgNamespaceContentModels[ constant( $ns ) ] = 'flow-board';
@@ -158,7 +158,7 @@ if ( $flowNamespaces ) {
 }
 
 wfLoadExtension( 'Thanks' );
-require_once "$IP/extensions/Echo/Echo.php"; // REL1_29+ wfLoadExtension( 'Echo' );
+wfLoadExtension( 'Echo' );
 
 wfLoadExtension( 'CheckUser' );
 $wgGroupPermissions['sysop']['checkuser'] = true;

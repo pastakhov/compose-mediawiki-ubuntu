@@ -21,12 +21,12 @@ Enjoy with [MediaWiki](https://www.mediawiki.org/) + [VisualEditor](https://www.
 Running `sudo docker-compose up` in a checkout of this repository will start containers:
 
 - `db` - A MySQL [container](https://hub.docker.com/r/pastakhov/mysql/), used as the database backend for MediaWiki.
-- `elasticsearch` - An [Elasticsearch](https://www.elastic.co/products/elasticsearch) [container](https://github.com/pastakhov/docker-elasticsearch/), used as the full-text search engine for MediaWiki
+- `elasticsearch` - An [Elasticsearch](https://www.elastic.co/products/elasticsearch) [container](https://hub.docker.com/_/elasticsearch/), used as the full-text search engine for MediaWiki
 - `memcached` - A memory object caching system [container](https://hub.docker.com/_/memcached/), used as the cache system for MediaWiki
 - `parsoid` - A [bidirectional runtime wikitext parser](https://www.mediawiki.org/wiki/Parsoid) [container](https://hub.docker.com/r/pastakhov/parsoid/), used by [VisualEditor](https://www.mediawiki.org/wiki/VisualEditor), [Flow](https://www.mediawiki.org/wiki/Flow) and other [MediaWiki extensions](https://www.mediawiki.org/wiki/Extensions)
 - `proxy` - [Varnish reverse proxy server](https://www.mediawiki.org/wiki/Manual:Varnish_caching) [container](https://github.com/pastakhov/docker-mediawiki-varnish/) which reduces the time taken to serve often-requested pages
 - `restbase` - A [REST storage and service dispatcher](https://www.mediawiki.org/wiki/RESTBase) [container](https://hub.docker.com/r/pastakhov/restbase/)
-- `web` - An Apache/MediaWiki container with PHP 7.0 and MediaWiki 1.28
+- `web` - An Apache/MediaWiki container with PHP 7.0 and MediaWiki 1.29
 
 The elasticsearch, parsoid, restbase, proxy, web containers are based on [Ubuntu](https://hub.docker.com/_/ubuntu/) 16.04
 
