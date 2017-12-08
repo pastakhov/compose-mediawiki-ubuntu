@@ -250,5 +250,8 @@ switch( getenv( 'MW_SEARCH_TYPE' ) ) {
         $wgSearchType = null;
 }
 
+######################### MultimediaViewer ##########################
+wfLoadExtension('MultimediaViewer');
+
 ######################### Custom Settings ##########################
 @include( 'CustomSettings.php' );

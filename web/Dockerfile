@@ -138,6 +138,11 @@ RUN set -x; \
     && composer install --no-dev \
     && cd ..
 
+##### MultimediaViewer extension
+RUN set -x; \
+    cd $MW_HOME/extensions \
+    && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/MultimediaViewer
+
 #### Run maintenance sripts
 # Increase value for run maintenance script before web service started
 ENV MW_AUTOUPDATE=true \
