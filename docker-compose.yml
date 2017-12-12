@@ -2,12 +2,14 @@ version: '2'
 services:
     db:
         image: pastakhov/mysql:5.7
+        restart: always
         environment:
             - MYSQL_ROOT_HOST=%
             - MYSQL_ROOT_PASSWORD=3dodPaTXF5
 
     proxy:
         image: pastakhov/varnish-mediawiki:1.0
+        restart: always
         depends_on:
             - web
             - restbase
@@ -24,6 +26,7 @@ services:
         build: 
             context: ./web
             dockerfile: Dockerfile
+        restart: always
         depends_on:
             - db
             - elasticsearch
@@ -60,15 +63,18 @@ services:
 
     memcached:
         image: memcached
+        restart: always
 
     parsoid:
         image: pastakhov/parsoid:0.7.1
+        restart: always
         environment:
             - PARSOID_NUM_WORKERS=0
             - PARSOID_DOMAIN_web=http://web/w/api.php
 
     restbase:
         image: pastakhov/restbase:0.16.9
+        restart: always
         environment:
             - RB_CONF_NUM_WORKERS=0
             - RB_CONF_DOMAIN_web=http://web/w/api.php
@@ -79,3 +85,4 @@ services:
 
     elasticsearch:
         image: pastakhov/elasticsearch:2.4.5
+        restart: always
