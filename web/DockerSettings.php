@@ -250,5 +250,12 @@ switch( getenv( 'MW_SEARCH_TYPE' ) ) {
         $wgSearchType = null;
 }
 
+######################### MultimediaViewer ##########################
+wfLoadExtension('MultimediaViewer');
+
+######################### MobileFrontend ##########################
+wfLoadExtension( 'MobileFrontend' );
+$wgMFAutodetectMobileView = true;
+
 ######################### Custom Settings ##########################
 @include( 'CustomSettings.php' );

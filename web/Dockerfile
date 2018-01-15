@@ -20,6 +20,7 @@ RUN set -x; \
         php-intl \
         php-zip \
         php-memcached \
+        php-pear \
         python-pygments \
         imagemagick \
         netcat \
@@ -28,6 +29,7 @@ RUN set -x; \
         unzip \
         mysql-client \
         wget \
+    && pear install mail net_smtp \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt/archives/* \
     && a2enmod rewrite \
@@ -135,6 +137,16 @@ RUN set -x; \
     && cd Elastica \
     && composer install --no-dev \
     && cd ..
+
+##### MultimediaViewer extension
+RUN set -x; \
+    cd $MW_HOME/extensions \
+    && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/MultimediaViewer
+
+##### MobileFrontend extension
+RUN set -x; \
+    cd $MW_HOME/extensions \
+    && git clone --depth 1 -b $MW_VERSION https://gerrit.wikimedia.org/r/p/mediawiki/extensions/MobileFrontend
 
 #### Run maintenance sripts
 # Increase value for run maintenance script before web service started

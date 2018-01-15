@@ -109,6 +109,8 @@ run_script_if_needed () {
     fi
 }
 
+chown -R $WWW_USER:$WWW_GROUP $MW_VOLUME $MW_HOME
+
 cd $MW_HOME
 
 # If there is no LocalSettings.php, create one using maintenance/install.php
