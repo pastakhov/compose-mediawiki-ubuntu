@@ -24,8 +24,7 @@ services:
 
     web:
         build: 
-            context: ./web
-            dockerfile: Dockerfile
+            context: web
         restart: always
         depends_on:
             - db
