@@ -109,7 +109,7 @@ run_script_if_needed () {
     fi
 }
 
-chown -R $WWW_USER:$WWW_GROUP $MW_VOLUME $MW_HOME
+chown -R $WWW_USER:$WWW_GROUP $MW_HOME/images
 
 cd $MW_HOME
 
