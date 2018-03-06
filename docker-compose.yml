@@ -93,6 +93,7 @@ services:
             - "xpack.monitoring.enabled=false"
             - "xpack.security.enabled=false"
             - "xpack.watcher.enabled=false"
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
 
     pdf:
         image: msokk/electron-render-service
