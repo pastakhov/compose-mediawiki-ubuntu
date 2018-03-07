@@ -36,7 +36,7 @@ RUN set -x; \
     && rm /var/www/html/index.html \
     && rm -rf /etc/apache2/sites-enabled/*
 
-ENV MW_VERSION=REL1_29 \
+ENV MW_VERSION=REL1_30 \
     MW_HOME=/var/www/html/w \
     MW_VOLUME=/mediawiki \
     WWW_USER=www-data \
